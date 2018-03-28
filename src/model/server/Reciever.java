@@ -23,7 +23,6 @@ public class Reciever extends Thread {
 			try{
 				Socket connectionSocket = welcomeSocket.accept();
 				System.out.println("Accepted Client");
-				@SuppressWarnings("unused")
 				Connection c = new Connection(connectionSocket,server);
 				c.start();
 			}

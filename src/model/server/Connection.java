@@ -9,6 +9,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.Socket;
 import java.util.HashMap;
+import java.util.Map.Entry;
 
 public class Connection extends Thread{
 	
@@ -43,7 +44,6 @@ public class Connection extends Thread{
 					try {
 						Thread.sleep(100);
 					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 					continue;
@@ -72,8 +72,19 @@ public class Connection extends Thread{
 			return;
 		}
 							System.out.println("Connection: Accepted name = "+name);
+							
+		// Reading requests
 		while(true)
 		{
+			
+			try {
+				if(!inFromClient.ready())
+				{
+					Thread.sleep(100);
+					continue;
+				}
+			} catch (Exception e1) {e1.printStackTrace();}
+			
 			String request = "";
 			try{
 				for(int i = 0; i < 4;i++)				
@@ -101,9 +112,18 @@ public class Connection extends Thread{
 			outToClient.writeBytes(response.get("TimeStamp")+"\n");
 			outToClient.writeBytes(response.get("Format")+"\n");
 			outToClient.writeBytes(response.get("Connection")+"\n");
+			if(file==null)
+				outToClient.writeBytes("null\n");
 			
+			System.out.println("________");
+			System.out.println("Connection: sent the following");
+			for(Entry<String, String> e : response.entrySet())
+			{
+				System.out.println(e.getKey()+": "+e.getValue());
+			}
 			if(file!=null)
 			{
+				outToClient.writeBytes(file.getName()+"\n");
 				byte[] bytes = new byte[16 * 1024];
 				InputStream in = new FileInputStream(file);
 				
@@ -117,9 +137,7 @@ public class Connection extends Thread{
 			
 			if(response.get("Connection").equals("close"))
 			{
-				inFromClient.close();
-				outToClient.close();
-				socket.close();
+				terminate();
 			}
 		}catch(Exception e)
 		{
@@ -127,4 +145,13 @@ public class Connection extends Thread{
 		}
 	}
 
+	
+	public void terminate() throws IOException
+	{
+		inFromClient.close();
+		outToClient.close();
+		socket.close();
+	}
+	
+	
 }

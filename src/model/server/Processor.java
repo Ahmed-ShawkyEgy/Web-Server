@@ -1,10 +1,7 @@
 package model.server;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -52,11 +49,13 @@ public class Processor extends Thread{
 				{
 					response.put("Status", "404 Not-Found");
 					response.put("Format", "null");
+					System.out.println("Process: Failed to load docroot/" + request.get("URL") + "." + getExtension(request));
 				}
 				else
 				{
 					response.put("Format",getExtension(request));
-					f = new File("docroot/"+getExtension(request));
+					f = new File("docroot/"+request.get("URL")+"."+getExtension(request));
+					System.out.println("Process: loading " + request.get("URL") + "." + getExtension(request));
 				}
 				currentConnection.sendResponse(response, f);
 				
@@ -137,7 +136,7 @@ public class Processor extends Thread{
 		String s = "null";
 		for(String format : formats)
 		{
-			File f = new File("docroot/"+request.get("URL")+format);
+			File f = new File("docroot/"+request.get("URL")+"."+format);
 			if(f.exists())
 				return format;
 		}

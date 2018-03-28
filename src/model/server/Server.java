@@ -16,16 +16,17 @@ public class Server {
 		requestQueue = new LinkedList<String>();
 		connectionList = new HashMap<String,Connection>();
 		Reciever reciever;
-		Process processor;
+		Processor processor;
 		try{
 			reciever = new Reciever(PORT_NUMBER,this);
-			
+			processor = new Processor(APP_NAME, this);
 		}catch(Exception e)
 		{
 			
 			e.printStackTrace();
 			return;
 		}
+		processor.start();
 		reciever.start();
 	}
 	
