@@ -1,37 +1,68 @@
 package model.server;
 
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Queue;
 
 public class Server {
 
-	private final int portNumber = 30;
-	// TODO identify uniquely by name
-	private HashSet<String> usernameList;
-	private Queue<Connection> connectionQueue;
+	private final int PORT_NUMBER = 30;
+	private final String APP_NAME = "eBay";
+	
+	private HashMap<String,Connection> connectionList;
+	private Queue<String> requestQueue;
 	
 	public Server() {
-		connectionQueue = new LinkedList<Connection>();
-		usernameList = new HashSet<String>();
+		requestQueue = new LinkedList<String>();
+		connectionList = new HashMap<String,Connection>();
+		Reciever reciever;
+		Process processor;
 		try{
-			Reciever reciever = new Reciever(portNumber,this);
-			reciever.start();
+			reciever = new Reciever(PORT_NUMBER,this);
+			
 		}catch(Exception e)
 		{
+			
 			e.printStackTrace();
 			return;
 		}
+		reciever.start();
 	}
 	
 	public boolean addConnection(Connection c)
 	{
-		if(usernameList.contains(c.getUserName()))
+		if(connectionList.containsKey(c.getUserName()))
 			return false;
-		usernameList.add(c.getUserName());
-		connectionQueue.add(c);
+		connectionList.put(c.getUserName(),c);
 		return true;
 	}
 	
+	public void closeConnection(Connection c)
+	{
+		if(connectionList.containsKey(c.getUserName()))
+			connectionList.remove(c.getUserName());
+	}
 	
+	public Connection getConnection(String userName)
+	{
+		if(!connectionList.containsKey(userName))
+			return null;
+		return connectionList.get(userName);
+	}
+	
+
+	public Queue<String> getRequestQueue() {
+		return requestQueue;
+	}
+
+	public void addRequest(String name,String request)
+	{
+		if(connectionList.containsKey(name))
+		{
+			System.out.println("_______________");
+			System.out.print("Server: recieved request from "+name+"\n"+request);
+			System.out.println("_______________");
+			requestQueue.add(name+"\n"+request);	
+		}
+	}
 }

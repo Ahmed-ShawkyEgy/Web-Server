@@ -9,9 +9,9 @@ public class Reciever extends Thread {
 	private ServerSocket welcomeSocket;
 	private Server server;
 	
-	public Reciever(int portNumber,Server server) throws IOException
+	public Reciever(int PORT_NUMBER,Server server) throws IOException
 	{
-		welcomeSocket = new ServerSocket(portNumber);
+		welcomeSocket = new ServerSocket(PORT_NUMBER);
 		this.server = server;
 	}
 	
@@ -22,7 +22,10 @@ public class Reciever extends Thread {
 		{
 			try{
 				Socket connectionSocket = welcomeSocket.accept();
+				System.out.println("Accepted Client");
+				@SuppressWarnings("unused")
 				Connection c = new Connection(connectionSocket,server);
+				c.start();
 			}
 			catch(Exception e)
 			{

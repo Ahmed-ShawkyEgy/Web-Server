@@ -5,7 +5,6 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
-import java.util.HashMap;
 
 public class Connection extends Thread{
 	
@@ -24,8 +23,8 @@ public class Connection extends Thread{
 			outToClient = new DataOutputStream(socket.getOutputStream());
 		} catch (IOException e) {
 			e.printStackTrace();
+			return;
 		}
-		this.start();
 	}
 	
 	
@@ -35,21 +34,59 @@ public class Connection extends Thread{
 		while(true)
 		{
 			try {
+				if(!inFromClient.ready())
+				{
+					try {
+						Thread.sleep(100);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					continue;
+				}
 				name = inFromClient.readLine();
 				if(server.addConnection(this))
 					break;
 			} catch (IOException e) {
 				e.printStackTrace();
+				return;
 			}
+			try{
+				outToClient.writeBytes("false\n");
+			}catch(Exception e)
+			{
+				e.printStackTrace();
+				return;
+			}
+		}
+		
+		try{
+			outToClient.writeBytes("true\n");
+		}catch(Exception e)
+		{
+			e.printStackTrace();
+			return;
+		}
+							System.out.println("Connection: Accepted name = "+name);
+		while(true)
+		{
+			String request = "";
+			try{
+				for(int i = 0; i < 4;i++)				
+					request += inFromClient.readLine()+"\n";
+				server.addRequest(name, request);
+			
+			}catch(Exception e)
+			{
+				e.printStackTrace();
+				return;
+			}
+			
 		}
 	}
 	
-	public void readRequest()
-	{
-		HashMap<String, Object> map = new HashMap<String,Object>();
-		
-	}
-
+	
+	
 
 	public String getUserName() {
 		return name;
