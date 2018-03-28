@@ -76,8 +76,8 @@ public class Connection extends Thread{
 		// Reading requests
 		while(true)
 		{
-			
-			try {
+			try 
+			{
 				if(!inFromClient.ready())
 				{
 					Thread.sleep(100);
@@ -85,6 +85,7 @@ public class Connection extends Thread{
 				}
 			} catch (Exception e1) {e1.printStackTrace();}
 			
+			System.out.println("Connection : Begin reading input");
 			String request = "";
 			try{
 				for(int i = 0; i < 4;i++)				
@@ -121,9 +122,11 @@ public class Connection extends Thread{
 			{
 				System.out.println(e.getKey()+": "+e.getValue());
 			}
+			System.out.println("File: "+(file==null?"null":file.getName()));
 			if(file!=null)
 			{
 				outToClient.writeBytes(file.getName()+"\n");
+				outToClient.writeBytes(file.length()+"\n");
 				byte[] bytes = new byte[16 * 1024];
 				InputStream in = new FileInputStream(file);
 				
@@ -131,7 +134,8 @@ public class Connection extends Thread{
 		        while ((count = in.read(bytes)) > 0) {
 		        	outToClient.write(bytes, 0, count);
 		        }
-		        outToClient.writeBytes("\n");
+//		        outToClient.writeBytes("\n");
+		        System.out.println("Connection: Sent file to Client");
 		        in.close();
 			}
 			
@@ -148,6 +152,8 @@ public class Connection extends Thread{
 	
 	public void terminate() throws IOException
 	{
+		System.out.println("_____");
+		System.out.println("Connection: Terminating");
 		inFromClient.close();
 		outToClient.close();
 		socket.close();

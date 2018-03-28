@@ -23,11 +23,25 @@ public class Client {
 	public static void main(String[] args) throws UnknownHostException, IOException {
 		Client c = new Client();
 		Scanner sc = new Scanner(System.in);
-		while(true)
-		{
-			if(c.setName(sc.nextLine()))
-				break;
-		}
+//		while(true)
+//		{
+//			if(c.setName(sc.nextLine()))
+//				break;
+//		}
+		c.setName("Ahmed");
+		
+		c.sendRequest("a", "txt jpeg", "keep-alive");
+		c.recieveResponse();
+		
+		c.sendRequest("balabizooooooooooooooo", "txt jpeg", "keep-alive");
+		c.recieveResponse();
+		
+		c.sendRequest("b", "jpeg txt", "keep-alive");
+		c.recieveResponse();
+//		
+//		c.sendRequest("aaaaaaaaaaaaaaaaaaaa", "txt jpeg", "keep-alive");
+//		c.recieveResponse();
+		
 		
 		while(true)
 		{
@@ -51,6 +65,9 @@ public class Client {
 		if(name==null)
 			return;
 		String request = "GET "+url+" 1.1\neBay\n"+format+"\n"+connection+"\n";
+		System.out.println("__________");
+		System.out.println("Client: Sent request:");
+		System.out.println(request);
 		try{
 			outToServer.writeBytes(request);
 		}catch(Exception e)
@@ -58,8 +75,8 @@ public class Client {
 			e.printStackTrace();
 		}
 	}
-	
-	// TODO Implement
+
+
 	public void recieveResponse() throws IOException{
 		String r = "";
 		for(int i = 0; i < 5;i++)
@@ -76,25 +93,33 @@ public class Client {
 		{
 			System.out.println(e.getKey()+": "+e.getValue());
 		}
-		
-		recieveFile(response.get("File"));
+		if(!response.get("File").equals("null"))
+			recieveFile(response.get("File"));
 	}
 
 	public void recieveFile(String fileName) throws IOException
 	{
+		int len = Integer.parseInt(inFromServer.readLine());
+		
 		File f = new File("clients/"+name+"/"+fileName);
 		if(!f.exists())
 			f.createNewFile();
 		FileOutputStream out = new FileOutputStream(f);
-		byte[] bytes = new byte[16*1024];
+//		byte[] bytes = new byte[16*1024];
 		
-		InputStream  in = clientSocket.getInputStream();
-		int count;
-        while ((count = in.read(bytes)) > 0) {
-            out.write(bytes, 0, count);
-        }
-        in.close();
+//		int count;
+		System.err.println("Start Recieving file");
+//        while ((count = in.read(bytes)) > 0) {
+//            out.write(bytes, 0, count);
+//        }
+		for(int i = 0; i < len;i++)
+		{
+			
+			out.write(inFromServer.read());
+		}
+        
         out.close();
+        System.err.println("End recieving file");
 	}
 	
 	public HashMap<String,String> parseResponse(String r)
@@ -145,6 +170,7 @@ public class Client {
 		{
 			f.mkdirs();
 		}
+		
 	}
 	
 	
