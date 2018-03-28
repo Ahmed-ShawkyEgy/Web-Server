@@ -2,9 +2,13 @@ package model.server;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.Socket;
+import java.util.HashMap;
 
 public class Connection extends Thread{
 	
@@ -85,13 +89,42 @@ public class Connection extends Thread{
 		}
 	}
 	
-	
-	
 
 	public String getUserName() {
 		return name;
 	}
 	
-	
+	public void sendResponse(HashMap<String, String>response,File file)
+	{
+		try{
+			outToClient.writeBytes(response.get("Status")+" "+"1.1\n");
+			outToClient.writeBytes(response.get("TimeStamp")+"\n");
+			outToClient.writeBytes(response.get("Format")+"\n");
+			outToClient.writeBytes(response.get("Connection")+"\n");
+			
+			if(file!=null)
+			{
+				byte[] bytes = new byte[16 * 1024];
+				InputStream in = new FileInputStream(file);
+				
+				int count;
+		        while ((count = in.read(bytes)) > 0) {
+		        	outToClient.write(bytes, 0, count);
+		        }
+		        outToClient.writeBytes("\n");
+		        in.close();
+			}
+			
+			if(response.get("Connection").equals("close"))
+			{
+				inFromClient.close();
+				outToClient.close();
+				socket.close();
+			}
+		}catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+	}
 
 }

@@ -1,6 +1,12 @@
 package model.server;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Queue;
 import java.util.Scanner;
@@ -36,6 +42,23 @@ public class Processor extends Thread{
 				Connection currentConnection = server.getConnection(request.get("Name"));
 				if(currentConnection==null)
 					continue;
+				
+				HashMap<String, String> response = new HashMap<String , String>();
+				response.put("Status","200 OK");
+				response.put("TimeStamp", new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date()));
+				response.put("Connection", request.get("Connection"));
+				File f = null;
+				if(!isValideRequest(request))
+				{
+					response.put("Status", "404 Not-Found");
+					response.put("Format", "null");
+				}
+				else
+				{
+					response.put("Format",getExtension(request));
+					f = new File("docroot/"+getExtension(request));
+				}
+				currentConnection.sendResponse(response, f);
 				
 				
 			} catch (Exception e) {
@@ -80,21 +103,22 @@ public class Processor extends Thread{
 		return map;
 	}
 	
-	public boolean validate(HashMap<String, String> request)
+	public boolean isValideRequest(HashMap<String, String> request)
 	{
 		try{
 			if(!request.get("Method").toLowerCase().equals("get"))
 				return false;
-			
-//			TODO validate URL
+
+
+			String s = getExtension(request);
+			if(s.equals("null"))
+				return false;			
 			
 			if(!request.get("Version").equals("1.1"))
 				return false;
 			
 			if(!request.get("Host").equals(APP_NAME))
 				return false;
-			
-//			TODO validate Format
 			
 			if(!request.get("Connection").equals("keep-alive") && !request.get("Connection").equals("close"))
 				return false;
@@ -105,6 +129,22 @@ public class Processor extends Thread{
 		}
 		return true;
 	}
+	
+	public String getExtension(HashMap<String, String> request)
+	{
+		String[] formats = request.get("Format").split(" ");
+		
+		String s = "null";
+		for(String format : formats)
+		{
+			File f = new File("docroot/"+request.get("URL")+format);
+			if(f.exists())
+				return format;
+		}
+		return s;
+		
+	}
+	
 	
 	
 }
