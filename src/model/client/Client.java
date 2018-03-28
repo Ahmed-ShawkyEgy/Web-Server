@@ -17,7 +17,6 @@ public class Client {
 	
 	public static void main(String[] args) throws UnknownHostException, IOException {
 		Client c = new Client();
-//		c.setName("ahmed");
 		Scanner sc = new Scanner(System.in);
 		while(true)
 		{

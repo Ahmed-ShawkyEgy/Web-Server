@@ -62,7 +62,8 @@ public class Server {
 			System.out.println("_______________");
 			System.out.print("Server: recieved request from "+name+"\n"+request);
 			System.out.println("_______________");
-			requestQueue.add(name+"\n"+request);	
+			requestQueue.add(name+"\n"+request);
+			System.out.println("Queue Size = "+requestQueue.size());
 		}
 	}
 }
