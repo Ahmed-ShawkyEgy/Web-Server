@@ -5,6 +5,8 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 import java.net.UnknownHostException;
+import java.util.HashMap;
+import java.util.Map.Entry;
 import java.util.StringTokenizer;
 
 import javax.swing.JFrame;
@@ -16,6 +18,8 @@ import model.client.Client;
 
 public class MainController implements ActionListener{
 
+	boolean isConnected = true;
+	
 	public static void main(String[] args) throws UnknownHostException, IOException {
 		
 		MainController mc = new MainController();
@@ -77,10 +81,44 @@ public class MainController implements ActionListener{
 			break;
 			
 			case "request":
-
+				if(!isConnected)
+				{
+					((AppView)curFrame).print("__________");
+					((AppView)curFrame).print("Not connected to the server");
+					return;
+				}
+				String rest = st.nextToken();
+				while(st.hasMoreTokens())
+					rest += " "+st.nextToken();
+				String[] param = rest.split("\\|");
+				if(param[2].equals("close"))
+					isConnected = false;
+				
+				((AppView)curFrame).print("__________");
+				((AppView)curFrame).print("Request:");
+				
+				String req = c.sendRequest(param[0], param[1], param[2]);
+				
+				((AppView)curFrame).print(req);
+			try {
+				HashMap<String, String> respond = c.recieveResponse();
+				((AppView)curFrame).print("__________");
+				((AppView)curFrame).print("Response:");
+				for(Entry<String, String> x : respond.entrySet())
+				{
+					((AppView)curFrame).print(x.getKey()+":"+x.getValue());
+				}
+			} catch (IOException e2) {
+				e2.printStackTrace();
+			}
+				
 			break;
 			
 			case "quit":
+				if(!isConnected)
+				{
+					terminate();
+				}
 				c.sendRequest("~", "", "close");
 			try {
 				c.recieveResponse();
@@ -104,6 +142,7 @@ public class MainController implements ActionListener{
 		}
 	}
 
+	
 	
 	public void terminate()
 	{

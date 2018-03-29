@@ -5,9 +5,12 @@ import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Reader;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.HashMap;
@@ -112,25 +115,31 @@ public class Client {
 
 	public void recieveFile(String fileName) throws IOException
 	{
+		try {
+			Thread.sleep(200);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 		int len = Integer.parseInt(inFromServer.readLine());
-		
 		File f = new File("clients/"+name+"/"+fileName);
 		if(!f.exists())
 			f.createNewFile();
 		FileOutputStream out = new FileOutputStream(f);
-//		byte[] bytes = new byte[16*1024];
+		byte[] bytes = new byte[16*1024];
 		
-//		int count;
+		int count;
 		System.err.println("Start Recieving file");
-//        while ((count = in.read(bytes)) > 0) {
-//            out.write(bytes, 0, count);
-//        }
+		InputStream in = new FileInputStream(f);
+		while ((count = in.read(bytes)) > 0) {
+            out.write(bytes, 0, count);
+        }
 		for(int i = 0; i < len;i++)
 		{
 			
-			out.write(inFromServer.read());
+//			out.write(inFromServer.read());
 		}
         
+		in.close();
         out.close();
         System.err.println("End recieving file");
 	}

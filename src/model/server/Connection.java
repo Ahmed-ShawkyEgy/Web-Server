@@ -159,6 +159,7 @@ public class Connection extends Thread{
 		inFromClient.close();
 		outToClient.close();
 		socket.close();
+		server.closeConnection(this);
 	}
 	
 	
