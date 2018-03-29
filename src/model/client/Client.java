@@ -120,7 +120,7 @@ public class Client {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		int len = Integer.parseInt(inFromServer.readLine());
+//		int len = Integer.parseInt(inFromServer.readLine());
 		File f = new File("clients/"+name+"/"+fileName);
 		if(!f.exists())
 			f.createNewFile();
@@ -133,11 +133,11 @@ public class Client {
 		while ((count = in.read(bytes)) > 0) {
             out.write(bytes, 0, count);
         }
-		for(int i = 0; i < len;i++)
-		{
-			
+//		for(int i = 0; i < len;i++)
+//		{
+//			
 //			out.write(inFromServer.read());
-		}
+//		}
         
 		in.close();
         out.close();

@@ -127,7 +127,7 @@ public class Connection extends Thread{
 			if(file!=null)
 			{
 				outToClient.writeBytes(file.getName()+"\n");
-				outToClient.writeBytes(file.length()+"\n");
+//				outToClient.writeBytes(file.length()+"\n");
 				byte[] bytes = new byte[16 * 1024];
 				InputStream in = new FileInputStream(file);
 				
