@@ -27,35 +27,6 @@ public class Client {
 	private boolean isOnline = true; 
 	private ActionListener listener;
 	
-	public static void main(String[] args) throws UnknownHostException, IOException {
-//		Client c = new Client();
-//		Scanner sc = new Scanner(System.in);
-//		while(true)
-//		{
-//			if(c.setName(sc.nextLine()))
-//				break;
-//		}
-//		c.setName("Ahmed");
-//		
-//		c.sendRequest("a", "txt jpeg", "keep-alive");
-//		c.recieveResponse();
-//		
-//		c.sendRequest("balabizooooooooooooooo", "txt jpeg", "keep-alive");
-//		c.recieveResponse();
-//		
-//		c.sendRequest("b", "jpeg txt", "keep-alive");
-//		c.recieveResponse();
-//		
-//		c.sendRequest("aaaaaaaaaaaaaaaaaaaa", "txt jpeg", "keep-alive");
-//		c.recieveResponse();
-//		
-//		
-//		while(true)
-//		{
-//			c.sendRequest(sc.nextLine(), sc.nextLine(), sc.nextLine());
-//			c.recieveResponse();
-//		}
-	}
 	
 	public Client(ActionListener listener) throws UnknownHostException, IOException {
 		this.listener = listener;

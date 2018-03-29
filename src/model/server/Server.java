@@ -13,6 +13,7 @@ public class Server {
 	private Queue<String> requestQueue;
 	
 	public static void main(String[] args) {
+		@SuppressWarnings("unused")
 		Server server = new Server();
 	}
 	

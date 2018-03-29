@@ -22,6 +22,7 @@ public class MainController implements ActionListener{
 	
 	public static void main(String[] args) throws UnknownHostException, IOException {
 		
+		@SuppressWarnings("unused")
 		MainController mc = new MainController();
 	}
 	
