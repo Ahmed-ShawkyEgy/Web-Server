@@ -12,6 +12,10 @@ public class Server {
 	private HashMap<String,Connection> connectionList;
 	private Queue<String> requestQueue;
 	
+	public static void main(String[] args) {
+		Server server = new Server();
+	}
+	
 	public Server() {
 		requestQueue = new LinkedList<String>();
 		connectionList = new HashMap<String,Connection>();

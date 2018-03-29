@@ -18,6 +18,7 @@ public class Connection extends Thread{
 	private DataOutputStream  outToClient;
 	private String name;
 	private Server server;
+	private boolean isOnline = true;
 	
 	public Connection(Socket connectionSocket,Server server)
 	{
@@ -36,7 +37,7 @@ public class Connection extends Thread{
 	public void run() 
 	{
 		// Connect to the server with a valid user name
-		while(true)
+		while(isOnline)
 		{
 			try {
 				if(!inFromClient.ready())
@@ -74,7 +75,7 @@ public class Connection extends Thread{
 							System.out.println("Connection: Accepted name = "+name);
 							
 		// Reading requests
-		while(true)
+		while(isOnline)
 		{
 			try 
 			{
@@ -152,6 +153,7 @@ public class Connection extends Thread{
 	
 	public void terminate() throws IOException
 	{
+		isOnline = false;
 		System.out.println("_____");
 		System.out.println("Connection: Terminating");
 		inFromClient.close();
