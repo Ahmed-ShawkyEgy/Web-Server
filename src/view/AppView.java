@@ -31,7 +31,6 @@ public class AppView extends JFrame
 			public void windowClosing(java.awt.event.WindowEvent event)
 			{
 				listener.actionPerformed(new ActionEvent(this,ActionEvent.ACTION_PERFORMED,"quit"));
-//				System.exit(0);
 			}
 		});
 		setSize(840,1120);
@@ -96,12 +95,10 @@ public class AppView extends JFrame
 		/* Message Form */
 		JButton b = new JButton("Request");
 		
-//		b.setActionCommand("request");
 		
 		b.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent e) {
-//				String command = list.getSelectedValue()+"|"+text.getText().trim() + "|" + text1.getText();
 				String command = "request "+list.getSelectedValue()+"|";
 				for (int i = 0; i < formats.length; i++) {
 					if(formats[i].isSelected())

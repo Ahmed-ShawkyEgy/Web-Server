@@ -7,6 +7,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.Socket;
 import java.util.HashMap;
 import java.util.Map.Entry;
@@ -124,20 +125,24 @@ public class Connection extends Thread{
 				System.out.println(e.getKey()+": "+e.getValue());
 			}
 			System.out.println("File: "+(file==null?"null":file.getName()));
+			
 			if(file!=null)
 			{
 				outToClient.writeBytes(file.getName()+"\n");
-//				outToClient.writeBytes(file.length()+"\n");
-				byte[] bytes = new byte[16 * 1024];
-				InputStream in = new FileInputStream(file);
 				
-				int count;
-		        while ((count = in.read(bytes)) > 0) {
-		        	outToClient.write(bytes, 0, count);
-		        }
-//		        outToClient.writeBytes("\n");
+				{
+					byte[] bytes = new byte[16 * 1024];
+					InputStream in = new FileInputStream(file);
+					
+					int count;
+			        while ((count = in.read(bytes)) > 0) {
+			        	outToClient.write(bytes, 0, count);
+			        }
+					
+					in.close();
+				}
+
 		        System.out.println("Connection: Sent file to Client");
-		        in.close();
 			}
 			
 			if(response.get("Connection").equals("close"))

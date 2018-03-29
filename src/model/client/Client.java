@@ -1,22 +1,20 @@
 package model.client;
 
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.Reader;
+import java.io.OutputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.HashMap;
-import java.util.StringTokenizer;
 import java.util.Map.Entry;
 import java.util.Scanner;
+import java.util.StringTokenizer;
 
 import controller.MainController;
 
@@ -120,27 +118,23 @@ public class Client {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-//		int len = Integer.parseInt(inFromServer.readLine());
+		
 		File f = new File("clients/"+name+"/"+fileName);
 		if(!f.exists())
 			f.createNewFile();
-		FileOutputStream out = new FileOutputStream(f);
-		byte[] bytes = new byte[16*1024];
 		
-		int count;
-		System.err.println("Start Recieving file");
-		InputStream in = new FileInputStream(f);
-		while ((count = in.read(bytes)) > 0) {
-            out.write(bytes, 0, count);
-        }
-//		for(int i = 0; i < len;i++)
-//		{
-//			
-//			out.write(inFromServer.read());
-//		}
-        
-		in.close();
-        out.close();
+		
+		{
+			InputStream in = clientSocket.getInputStream();
+			byte[] bytes = new byte[16*1024];
+			OutputStream out = new FileOutputStream(f);
+			int count;
+			System.err.println("Start Recieving file");
+			while (in.available()>0 && (count = in.read(bytes)) > 0) {
+				out.write(bytes, 0, count);
+			}
+			out.close();
+		}
         System.err.println("End recieving file");
 	}
 	
