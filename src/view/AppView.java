@@ -32,7 +32,7 @@ public class AppView extends JFrame
 				listener.actionPerformed(new ActionEvent(this,ActionEvent.ACTION_PERFORMED,"quit"));
 			}
 		});
-		setSize(840,1120);
+		setSize(840,1020);
 		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
 		int x = dim.width/2-this.getSize().width/2, y = dim.height/2-this.getSize().height/2;
 		setLocation(x, y);

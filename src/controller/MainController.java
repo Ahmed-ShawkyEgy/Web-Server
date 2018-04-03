@@ -6,15 +6,15 @@ import java.io.File;
 import java.io.IOException;
 import java.net.UnknownHostException;
 import java.util.HashMap;
-import java.util.Map.Entry;
+import java.util.Scanner;
 import java.util.StringTokenizer;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
+import model.client.Client;
 import view.AppView;
 import view.ConnectView;
-import model.client.Client;
 
 public class MainController implements ActionListener{
 
@@ -99,16 +99,26 @@ public class MainController implements ActionListener{
 				((AppView)curFrame).print("Request:");
 				
 				String req = c.sendRequest(param[0], param[1], param[2]);
+				Scanner scc = new Scanner(req);
 				
-				((AppView)curFrame).print(req);
+				((AppView)curFrame).print(scc.nextLine());
+				((AppView)curFrame).print(scc.nextLine());
+				((AppView)curFrame).print(scc.nextLine());
+				((AppView)curFrame).print(scc.nextLine());
 			try {
 				HashMap<String, String> respond = c.recieveResponse();
 				((AppView)curFrame).print("__________");
 				((AppView)curFrame).print("Response:");
-				for(Entry<String, String> x : respond.entrySet())
-				{
-					((AppView)curFrame).print(x.getKey()+":"+x.getValue());
-				}
+
+				((AppView)curFrame).print(respond.get("Status")+" "+respond.get("Code")+
+						" "+respond.get("Version"));
+				((AppView)curFrame).print(respond.get("TimeStamp"));
+				((AppView)curFrame).print(respond.get("Format"));
+				((AppView)curFrame).print(respond.get("Connection"));
+//				for(Entry<String, String> x : respond.entrySet())
+//				{
+//					((AppView)curFrame).print(x.getKey()+":"+x.getValue());
+//				}
 			} catch (IOException e2) {
 				e2.printStackTrace();
 			}
